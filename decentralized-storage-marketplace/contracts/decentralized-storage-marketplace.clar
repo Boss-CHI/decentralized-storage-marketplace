@@ -173,3 +173,21 @@
     response-timestamp: (optional uint)
   }
 )
+
+;; Dispute Resolution System
+(define-map disputes
+  { id: uint }
+  {
+    listing-id: uint,
+    initiator: principal,
+    respondent: principal,
+    status: (string-utf8 32), ;; "pending", "resolved", "canceled"
+    reason: (string-utf8 256),
+    evidence: (optional (string-utf8 512)),
+    resolution: (optional (string-utf8 256)),
+    mediator: (optional principal),
+    created-at: uint,
+    resolved-at: (optional uint)
+  }
+)
+
