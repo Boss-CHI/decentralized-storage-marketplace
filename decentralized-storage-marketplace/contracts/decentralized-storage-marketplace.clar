@@ -61,3 +61,43 @@
     (asserts! (is-eq tx-sender contract-owner) err-owner-only)
     (var-set contract-enabled (not (var-get contract-enabled)))
     (ok (var-get contract-enabled))))
+
+;; Update a user's average rating
+(define-private (update-user-rating (user principal) (new-rating uint))
+  (match (map-get? user-stats { user: user })
+    existing-stats 
+      (let (
+        (current-avg (get avg-rating existing-stats))
+        (current-count (get rating-count existing-stats))
+        (new-count (+ current-count u1))
+        (new-avg (if (is-eq current-count u0)
+                   new-rating
+                   (/ (+ (* current-avg current-count) new-rating) new-count)))
+      )
+        (map-set user-stats 
+          { user: user }
+          (merge existing-stats { 
+            avg-rating: new-avg,
+            rating-count: new-count,
+            last-activity: stacks-block-height
+          })))
+    false))
+
+(define-private (is-listing-available (listing {
+    id: uint, 
+    owner: principal, 
+    price: uint, 
+    size: uint, 
+    duration: uint, 
+    rented: bool, 
+    renter: (optional principal), 
+    start-time: (optional uint), 
+    end-time: (optional uint),
+    proof: (optional (string-utf8 256)), 
+    rating: (optional uint),
+    location: (string-utf8 64),
+    availability: bool,
+    description: (string-utf8 256),
+    cancel-period: uint
+  }))
+  (and (not (get rented listing)) (get availability listing)))
