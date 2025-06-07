@@ -226,3 +226,33 @@
     
     (ok true)))
 
+
+;; Referral System
+(define-map referrals
+  { referrer: principal, referee: principal }
+  { 
+    active: bool,
+    reward-claimed: bool,
+    created-at: uint
+  }
+)
+
+;; Emergency Shutdown Function
+(define-public (emergency-shutdown)
+  (begin
+    (asserts! (is-eq tx-sender contract-owner) err-owner-only)
+    (var-set contract-enabled false)
+    (ok true)))
+
+
+;; Reinitialize Contract Function
+(define-public (reinitialize-contract (new-fee uint) (new-fee-recipient principal))
+  (begin
+    (asserts! (is-eq tx-sender contract-owner) err-owner-only)
+    (asserts! (<= new-fee u1000) err-fee-too-high)
+    
+    (var-set platform-fee new-fee)
+    (var-set platform-fee-recipient new-fee-recipient)
+    (var-set contract-enabled true)
+    
+    (ok true)))
