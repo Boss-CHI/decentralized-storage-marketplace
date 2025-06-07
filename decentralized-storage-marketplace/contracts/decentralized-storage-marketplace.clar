@@ -134,3 +134,42 @@
     total-payments: (var-get total-payments),
     total-disputes: (var-get total-disputes)
   })
+
+  ;; Storage Listing Data Structure
+(define-map storage-listings
+  { id: uint }
+  { 
+    owner: principal, 
+    price: uint, 
+    size: uint, 
+    duration: uint, 
+    rented: bool, 
+    renter: (optional principal), 
+    start-time: (optional uint), 
+    end-time: (optional uint),
+    proof: (optional (string-utf8 256)), 
+    rating: (optional uint),
+    location: (string-utf8 64),
+    availability: bool,
+    description: (string-utf8 256),
+    cancel-period: uint,
+    created-at: uint,
+    encryption-supported: bool,
+    bandwidth-limit: uint,
+    storage-type: (string-utf8 32)
+  }
+)
+
+;; Reviews Data Structure
+(define-map reviews
+  { id: uint }
+  {
+    listing-id: uint,
+    reviewer: principal,
+    rating: uint,
+    comment: (string-utf8 256),
+    timestamp: uint,
+    response: (optional (string-utf8 256)),
+    response-timestamp: (optional uint)
+  }
+)
